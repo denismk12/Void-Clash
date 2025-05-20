@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,8 +19,23 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 moveDirection = Vector3.zero;
     private float rotationX = 0;
     private CharacterController characterController;
-
     private bool canMove = true;
+
+    // ---------- PĂSTRARE ÎNTRE SCENE ----------
+    private static PlayerMovement instance;
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject); // păstrează între scene
+        }
+        else
+        {
+            Destroy(gameObject); // dacă există deja, îl distruge pe cel nou
+        }
+    }
 
     void Start()
     {
@@ -59,7 +74,6 @@ public class PlayerMovement : MonoBehaviour
             characterController.height = crouchHeight;
             walkSpeed = crouchSpeed;
             runSpeed = crouchSpeed;
-
         }
         else
         {
