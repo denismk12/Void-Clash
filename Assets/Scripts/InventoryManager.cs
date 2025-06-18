@@ -7,6 +7,19 @@ public class InventoryManager : MonoBehaviour
     private Color[] originalColors;
     private int selectedSlot = -1;
 
+    void Awake()
+    {
+        // Previne duplicatele la schimbarea scenelor
+        InventoryManager[] existingManagers = FindObjectsOfType<InventoryManager>();
+        if (existingManagers.Length > 1)
+        {
+            Destroy(gameObject); // distruge dacă deja există unul
+            return;
+        }
+
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     void Start()
     {
         // Salvăm culoarea originală (inclusiv alpha)
@@ -25,6 +38,12 @@ public class InventoryManager : MonoBehaviour
             SelectSlot(1);
         else if (Input.GetKeyDown(KeyCode.Alpha3))
             SelectSlot(2);
+
+        // DEBUG: verifică dacă meniul e activ
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            Debug.Log("InventoryManager activ? " + gameObject.activeInHierarchy);
+        }
     }
 
     void SelectSlot(int index)
@@ -38,14 +57,12 @@ public class InventoryManager : MonoBehaviour
         {
             if (i == index)
             {
-                // Evidențiază slotul (mai luminos)
                 Color baseColor = originalColors[i];
-                slotImages[i].color = baseColor * 1.5f; // luminează culoarea
-                slotImages[i].color = new Color(slotImages[i].color.r, slotImages[i].color.g, slotImages[i].color.b, baseColor.a); // păstrează alpha exact
+                slotImages[i].color = baseColor * 1.5f;
+                slotImages[i].color = new Color(slotImages[i].color.r, slotImages[i].color.g, slotImages[i].color.b, baseColor.a);
             }
             else
             {
-                // Revine la culoarea originală
                 slotImages[i].color = originalColors[i];
             }
         }
